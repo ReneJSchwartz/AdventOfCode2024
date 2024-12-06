@@ -9,9 +9,19 @@ example = """....#.....
 #.........
 ......#..."""
 
-grid = example.split("\n")
+file = open("input")
+input = file.read()
+
+# grid = example.split("\n")
+grid = input.split("\n")
+for i in range(len(grid)):
+    grid[i] = grid[i].rstrip()
 width = len(grid[0])
 height = len(grid)
+print(width)
+print(height)
+print(grid[0][width -1])
+print(grid[height - 1][width - 1])
 
 guardX = 0
 guardY = 0
@@ -19,6 +29,7 @@ direction = ""
 guardChars = "^<>v"
 #first figure out where our guard is
 for y in range(height):
+    print(y)
     for x in range(width):
         if grid[y][x] in guardChars:
             guardX = x
@@ -45,8 +56,10 @@ def print_grid():
 print_grid()
 print()
 
-
+counter = 0
+max_count = 10000000
 while guardY >= 0 and guardY < height and guardX >= 0 and guardX < width:
+    counter += 1
     listedRow = list(grid[guardY])
     if direction == '^':  # UP
         if guardY == 0:
@@ -54,11 +67,11 @@ while guardY >= 0 and guardY < height and guardX >= 0 and guardX < width:
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardY -= 1
-        elif grid[guardY - 1][guardX] == '.':
+        elif grid[guardY - 1][guardX] == '.' or grid[guardY - 1][guardX] == 'X':
             # same things happen here as in previous check but let's keep separate because of potential p2
-            guardY -= 1
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
+            guardY -= 1
         elif grid[guardY - 1][guardX] == '#':
             direction = '>'    
     elif direction == '>':  # RIGHT
@@ -66,7 +79,7 @@ while guardY >= 0 and guardY < height and guardX >= 0 and guardX < width:
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardX += 1
-        elif grid[guardY][guardX + 1] == '.':
+        elif grid[guardY][guardX + 1] == '.' or grid[guardY][guardX + 1] == 'X':
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardX += 1
@@ -77,7 +90,7 @@ while guardY >= 0 and guardY < height and guardX >= 0 and guardX < width:
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardY += 1
-        elif grid[guardY + 1][guardX] == '.': 
+        elif grid[guardY + 1][guardX] == '.' or grid[guardY + 1][guardX] == 'X': 
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardY += 1
@@ -88,12 +101,14 @@ while guardY >= 0 and guardY < height and guardX >= 0 and guardX < width:
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardX -= 1
-        elif grid[guardY][guardX - 1] == '.':  
+        elif grid[guardY][guardX - 1] == '.' or grid[guardY][guardX - 1] == 'X':  
             listedRow[guardX] = 'X'
             grid[guardY] = ''.join(listedRow)
             guardX -= 1
         elif grid[guardY][guardX - 1] == '#':
             direction = '^'
+    if counter is max_count:
+        break
 
 print_grid()
 print(str(count_positions()))
